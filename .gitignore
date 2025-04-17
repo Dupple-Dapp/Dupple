@@ -1,0 +1,30 @@
+# === Foundry / Forge ===
+out/
+cache/
+broadcast/
+lib/
+*.t.sol.json
+
+# === Node.js (optional, if you use Node for scripts/tools) ===
+node_modules/
+dist/
+build/
+.env
+.env.local
+.env.*.local
+
+# === OS / Editor Junk ===
+.DS_Store
+Thumbs.db
+*.log
+
+# === VSCode ===
+.vscode/
+
+# === Hardhat / Truffle (if coexisting) ===
+artifacts/
+typechain/
+coverage/
+
+# === Misc ===
+*.tsbuildinfo
