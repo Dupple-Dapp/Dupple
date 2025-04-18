@@ -12,10 +12,31 @@ contract Dupple is Ownable {
 
     constructor() Ownable(msg.sender) {
         allowedHobbies = [
-            "Reading", "Gaming", "Cooking", "Sports", "Music", "Travel", "Relaxing", "Football",
-            "barbecues", "cuddles", "meeting people", "Tennis", "writing", "Horror", "Coffee",
-            "Baking", "Hiking", "Gardening", "Foodie", "skiing", "Museums and galleries", "Wine",
-            "Art", "Coding", "Festivals"
+            "Reading",
+            "Gaming",
+            "Cooking",
+            "Sports",
+            "Music",
+            "Travel",
+            "Relaxing",
+            "Football",
+            "barbecues",
+            "cuddles",
+            "meeting people",
+            "Tennis",
+            "writing",
+            "Horror",
+            "Coffee",
+            "Baking",
+            "Hiking",
+            "Gardening",
+            "Foodie",
+            "skiing",
+            "Museums and galleries",
+            "Wine",
+            "Art",
+            "Coding",
+            "Festivals"
         ];
     }
 
@@ -39,6 +60,7 @@ contract Dupple is Ownable {
         uint tipsReceived;
         address[] tippers;
         bool registered;
+        uint resgistrationTime;
     }
 
     struct Message {
@@ -99,8 +121,15 @@ contract Dupple is Ownable {
         profile.gender = _gender;
         profile.interestedIn = _interestedIn;
         profile.registered = true;
+        profile.resgistrationTime = block.timestamp;
 
         allUsers.push(msg.sender);
+
+        emit Events.UserRegistered(msg.sender);
+    }
+
+    function getUser(address user) external view returns (UserProfile memory) {
+        return users[user];
     }
 
     function uploadPictureNFT(string memory uri) external onlyRegistered {
@@ -111,19 +140,29 @@ contract Dupple is Ownable {
         users[msg.sender].description = _desc;
     }
 
-    function sendMessage(address to, string memory content) external onlyRegistered {
+    function sendMessage(
+        address to,
+        string memory content
+    ) external onlyRegistered {
         require(users[to].registered, "Recipient not found");
         require(!blocked[to][msg.sender], "You are blocked");
-        require(users[msg.sender].dailyMessagesSent < dailyMessageLimit, "Daily limit reached");
+        require(
+            users[msg.sender].dailyMessagesSent < dailyMessageLimit,
+            "Daily limit reached"
+        );
 
         messages[msg.sender][to].push(
-            Message({ content: content, timestamp: block.timestamp })
+            Message({content: content, timestamp: block.timestamp})
         );
 
         users[msg.sender].dailyMessagesSent++;
+
+        emit Events.MessageSent(msg.sender, to, content);
     }
 
-    function getMessages(address withUser) external view onlyOwner returns (Message[] memory) {
+    function getMessages(
+        address withUser
+    ) external view onlyOwner returns (Message[] memory) {
         return messages[msg.sender][withUser];
     }
 
@@ -142,12 +181,16 @@ contract Dupple is Ownable {
             userMatches[msg.sender].push(user);
             userMatches[user].push(msg.sender);
         }
+
+        emit Events.Liked(msg.sender, user);
     }
 
     function dislike(address user) external onlyRegistered {
         require(!disliked[msg.sender][user], "Already disliked");
         disliked[msg.sender][user] = true;
         users[msg.sender].dislikes.push(user);
+
+        emit Events.Disliked(msg.sender, user);
     }
 
     function accept(address user) external onlyRegistered {
@@ -157,6 +200,8 @@ contract Dupple is Ownable {
         matches[user][msg.sender] = true;
         userMatches[msg.sender].push(user);
         userMatches[user].push(msg.sender);
+
+        emit Events.Matched(msg.sender, user);
     }
 
     function hasLiked(address user) external view returns (bool) {
@@ -178,6 +223,8 @@ contract Dupple is Ownable {
 
     function blockUser(address user) external onlyRegistered {
         blocked[msg.sender][user] = true;
+
+        emit Events.Blocked(msg.sender, user);
     }
 
     function isBlocked(address user) external view returns (bool) {
@@ -186,6 +233,8 @@ contract Dupple is Ownable {
 
     function resetDailyMessages(address user) external onlyOwner {
         users[user].dailyMessagesSent = 0;
+
+        emit Events.ResetUserDailyMessages(user);
     }
 
     function tip(address user) external payable onlyRegistered {
@@ -197,6 +246,8 @@ contract Dupple is Ownable {
 
         (bool success, ) = user.call{value: msg.value}("");
         require(success, "Transfer failed");
+
+        emit Events.Tipped(msg.sender, user, msg.value);
     }
 
     function getTippers() external view returns (address[] memory) {
@@ -207,7 +258,12 @@ contract Dupple is Ownable {
         return users[msg.sender].tipsReceived;
     }
 
-    function payToReturnTop10Percent() external payable onlyRegistered returns (UserProfile[] memory) {
+    function payToReturnTop10Percent()
+        external
+        payable
+        onlyRegistered
+        returns (UserProfile[] memory)
+    {
         require(msg.value >= 0.001 ether, "Insufficient fee");
 
         uint total = allUsers.length;
@@ -238,6 +294,7 @@ contract Dupple is Ownable {
         for (uint i = 0; i < topCount; i++) {
             topUsers[i] = tempUsers[i];
         }
+        emit Events.PaidToReturnTop10Percent(msg.sender);
 
         return topUsers;
     }
@@ -248,6 +305,8 @@ contract Dupple is Ownable {
 
     function changeDailyMessageLimit(uint num) external onlyOwner {
         dailyMessageLimit = num;
+
+        emit Events.ChangeDailyMessageLimit(num);
     }
 
     function withdrawFromContract() external onlyOwner {
@@ -256,5 +315,7 @@ contract Dupple is Ownable {
 
         (bool success, ) = payable(owner()).call{value: balance}("");
         require(success, "Transfer failed");
+
+        emit Events.WithdrawToOwner(balance);
     }
 }
