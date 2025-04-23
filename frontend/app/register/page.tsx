@@ -15,8 +15,7 @@ export default function Register() {
             auth: {
               mode: "redirect",
               options: ["google", "farcaster", "passkey"],
-              redirectUrl:
-                "https://2bd7-2c0f-2a80-1d-cf10-00-458.ngrok-free.app",
+              redirectUrl: "https://8e67-105-112-124-95.ngrok-free.app/",
             },
           }),
         ]}

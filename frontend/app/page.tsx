@@ -5,6 +5,7 @@ import { VerifyBlock } from "@/components/Verify";
 import { PayBlock } from "@/components/Pay";
 import Image from "next/image";
 import Register from "./register/page";
+import RegistrationPage from "./login/page";
 
 export default function Home() {
   // const [showSignup, setShowSignup] = useState(false);
@@ -22,9 +23,9 @@ export default function Home() {
             onClick={() => setShowSignup(true)}
             className="bg-purple-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-purple-700 transition"
           > */}
-            {/* Get Started */}
+          {/* Get Started */}
 
-            <Register />
+          <Register />
           {/* </button> */}
         </div>
       </header>
@@ -45,9 +46,13 @@ export default function Home() {
                 onClick={() => setShowSignup(true)}
                 className="bg-gradient-to-r from-purple-600 to-purple-500 text-white px-8 py-3 rounded-lg font-semibold text-lg shadow-md hover:from-purple-700 hover:to-purple-600 transition"
               > */}
-                {/* Join Now */}
+              {/* Join Now */}
+              {/* <button onClick={() => <RegistrationPage/>}>
+                Set up your account
+              </button> */}
+              <SignIn />
 
-                <Register />
+              <Register />
               {/* </button> */}
             </div>
             <div className="md:w-1/2 grid grid-cols-2 gap-4">
