@@ -5,6 +5,7 @@ import { VerifyBlock } from "@/components/Verify";
 import { PayBlock } from "@/components/Pay";
 import Image from "next/image";
 import FeaturedProfiles from "@/components/featured-profiles";
+import Link from "next/link";
 // import Footer from "@/components/footer";
 
 export default function Home() {
@@ -40,25 +41,49 @@ export default function Home() {
                 relationships. Your journey starts here.
               </p>
               <button
-                onClick={() => setShowSignup(true)}
+                // onClick={() => setShowSignup(true)}
                 className="bg-gradient-to-r from-purple-600 to-purple-500 text-white px-8 py-3 rounded-lg font-semibold text-lg shadow-md hover:from-purple-700 hover:to-purple-600 transition"
               >
-                Join Now
+                <Link href="/login">Join Now</Link>
               </button>
             </div>
             <div className="md:w-1/2 grid grid-cols-2 gap-4">
               {/* Image placeholders - replace with your actual images */}
               <div className="aspect-square rounded-xl overflow-hidden shadow-md bg-gray-100 flex items-center justify-center">
-                <Image src={"/person.jpg"} alt="Profile Image" width={500} height={500} className="object-cover w-full h-full" />
+                <Image
+                  src={"/person.jpg"}
+                  alt="Profile Image"
+                  width={500}
+                  height={500}
+                  className="object-cover w-full h-full"
+                />
               </div>
               <div className="aspect-square rounded-xl overflow-hidden shadow-md bg-gray-100 flex items-center justify-center">
-                <Image src={"/person.jpg"} alt="Profile Image" width={500} height={500} className="object-cover w-full h-full" />
+                <Image
+                  src={"/person.jpg"}
+                  alt="Profile Image"
+                  width={500}
+                  height={500}
+                  className="object-cover w-full h-full"
+                />
               </div>
               <div className="aspect-square rounded-xl overflow-hidden shadow-md bg-gray-100 flex items-center justify-center">
-               <Image src={"/person.jpg"} alt="Profile Image" width={500} height={500} className="object-cover w-full h-full" />
+                <Image
+                  src={"/person.jpg"}
+                  alt="Profile Image"
+                  width={500}
+                  height={500}
+                  className="object-cover w-full h-full"
+                />
               </div>
               <div className="aspect-square rounded-xl overflow-hidden shadow-md bg-gray-100 flex items-center justify-center">
-                <Image src={"/person.jpg"} alt="Profile Image" width={500} height={500} className="object-cover w-full h-full" />
+                <Image
+                  src={"/person.jpg"}
+                  alt="Profile Image"
+                  width={500}
+                  height={500}
+                  className="object-cover w-full h-full"
+                />
               </div>
             </div>
           </div>
@@ -114,7 +139,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-    <FeaturedProfiles />
+      <FeaturedProfiles />
       {/* Sign Up Modal */}
       {showSignup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
