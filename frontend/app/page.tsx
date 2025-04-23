@@ -4,11 +4,17 @@ import { SignIn } from "@/components/SignIn";
 import { VerifyBlock } from "@/components/Verify";
 import { PayBlock } from "@/components/Pay";
 import Image from "next/image";
+<<<<<<< HEAD
 import Register from "./register/page";
 import RegistrationPage from "./login/page";
+=======
+import FeaturedProfiles from "@/components/featured-profiles";
+import Link from "next/link";
+// import Footer from "@/components/footer";
+>>>>>>> 272612c1445e4a7a907e99a99d3abde0c6a84e23
 
 export default function Home() {
-  // const [showSignup, setShowSignup] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
   const people = ["/person.jpg"];
 
   return (
@@ -17,7 +23,7 @@ export default function Home() {
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-purple-600">Duple</h1>
+            <h1 className="text-2xl font-bold text-purple-600">dupple</h1>
           </div>
           {/* <button
             onClick={() => setShowSignup(true)}
@@ -25,7 +31,11 @@ export default function Home() {
           > */}
           {/* Get Started */}
 
+<<<<<<< HEAD
           <Register />
+=======
+            {/* <Register /> */}
+>>>>>>> 272612c1445e4a7a907e99a99d3abde0c6a84e23
           {/* </button> */}
         </div>
       </header>
@@ -42,9 +52,10 @@ export default function Home() {
                 Join our community of singles looking for meaningful
                 relationships. Your journey starts here.
               </p>
-              {/* <button
-                onClick={() => setShowSignup(true)}
+              <button
+                // onClick={() => setShowSignup(true)}
                 className="bg-gradient-to-r from-purple-600 to-purple-500 text-white px-8 py-3 rounded-lg font-semibold text-lg shadow-md hover:from-purple-700 hover:to-purple-600 transition"
+<<<<<<< HEAD
               > */}
               {/* Join Now */}
               {/* <button onClick={() => <RegistrationPage/>}>
@@ -54,6 +65,11 @@ export default function Home() {
 
               <Register />
               {/* </button> */}
+=======
+              >
+                <Link href="/login">Join Now</Link>
+              </button>
+>>>>>>> 272612c1445e4a7a907e99a99d3abde0c6a84e23
             </div>
             <div className="md:w-1/2 grid grid-cols-2 gap-4">
               {/* Image placeholders - replace with your actual images */}
@@ -61,8 +77,8 @@ export default function Home() {
                 <Image
                   src={"/person.jpg"}
                   alt="Profile Image"
-                  width={100}
-                  height={100}
+                  width={500}
+                  height={500}
                   className="object-cover w-full h-full"
                 />
               </div>
@@ -70,8 +86,8 @@ export default function Home() {
                 <Image
                   src={"/person.jpg"}
                   alt="Profile Image"
-                  width={100}
-                  height={100}
+                  width={500}
+                  height={500}
                   className="object-cover w-full h-full"
                 />
               </div>
@@ -79,8 +95,8 @@ export default function Home() {
                 <Image
                   src={"/person.jpg"}
                   alt="Profile Image"
-                  width={100}
-                  height={100}
+                  width={500}
+                  height={500}
                   className="object-cover w-full h-full"
                 />
               </div>
@@ -88,8 +104,8 @@ export default function Home() {
                 <Image
                   src={"/person.jpg"}
                   alt="Profile Image"
-                  width={100}
-                  height={100}
+                  width={500}
+                  height={500}
                   className="object-cover w-full h-full"
                 />
               </div>
@@ -141,50 +157,13 @@ export default function Home() {
               </h3>
               <p className="text-gray-600">
                 Start conversations, build connections, and meet in person when
-                you're ready.
+                you are ready.
               </p>
             </div>
           </div>
         </div>
       </section>
-
-      {/* Featured Profiles */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">
-            Meet Amazing Singles
-          </h2>
-          <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-            Our community is filled with interesting, like-minded individuals
-            looking for genuine connections.
-          </p>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {/* Profile placeholders - replace with your actual images */}
-            {people.map((person) => (
-              <div
-                key={person}
-                className="bg-white rounded-xl shadow-sm overflow-hidden"
-              >
-                <div className="aspect-square bg-gray-100 flex items-center justify-center">
-                  <Image
-                    src={person}
-                    alt="Profile Image"
-                    width={100}
-                    height={100}
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="font-medium text-gray-900">Name, 28</h3>
-                  <p className="text-gray-500 text-sm">City, State</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
+      <FeaturedProfiles />
       {/* Sign Up Modal */}
       {/* {showSignup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -210,7 +189,7 @@ export default function Home() {
             </button>
 
             <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Join Duple</h2>
+              <h2 className="text-2xl font-bold text-gray-900">Join dupple</h2>
               <p className="text-gray-600">
                 Create your account to get started
               </p>
@@ -224,86 +203,7 @@ export default function Home() {
         </div>
       )}  */}
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4">Duple</h3>
-              <p className="text-gray-400">
-                Find genuine connections with like-minded singles.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    Careers
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    Press
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Resources</h4>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    Dating Tips
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    Safety Guide
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    FAQ
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    Terms of Service
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    Cookie Policy
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="pt-8 border-t border-gray-800 text-center text-gray-400">
-            <p>&copy; {new Date().getFullYear()} Duple. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      {/* <Footer /> */}
     </main>
   );
 }
