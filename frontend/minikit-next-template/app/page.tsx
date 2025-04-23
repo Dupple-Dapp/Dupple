@@ -5,7 +5,7 @@ import { VerifyBlock } from "@/components/Verify";
 import { PayBlock } from "@/components/Pay";
 import Image from "next/image";
 import FeaturedProfiles from "@/components/featured-profiles";
-import Footer from "@/components/footer";
+// import Footer from "@/components/footer";
 
 export default function Home() {
   const [showSignup, setShowSignup] = useState(false);
@@ -153,7 +153,7 @@ export default function Home() {
         </div>
       )}
 
-      <Footer />
+      {/* <Footer /> */}
     </main>
   );
 }
