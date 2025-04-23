@@ -4,12 +4,11 @@ import { SignIn } from "@/components/SignIn";
 import { VerifyBlock } from "@/components/Verify";
 import { PayBlock } from "@/components/Pay";
 import Image from "next/image";
+import Register from "./register/page";
 
 export default function Home() {
-  const [showSignup, setShowSignup] = useState(false);
-  const people = [
-    "/person.jpg",
-  ];
+  // const [showSignup, setShowSignup] = useState(false);
+  const people = ["/person.jpg"];
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -19,12 +18,14 @@ export default function Home() {
           <div className="flex items-center">
             <h1 className="text-2xl font-bold text-purple-600">Duple</h1>
           </div>
-          <button
+          {/* <button
             onClick={() => setShowSignup(true)}
             className="bg-purple-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-purple-700 transition"
-          >
-            Get Started
-          </button>
+          > */}
+            {/* Get Started */}
+
+            <Register />
+          {/* </button> */}
         </div>
       </header>
 
@@ -40,26 +41,52 @@ export default function Home() {
                 Join our community of singles looking for meaningful
                 relationships. Your journey starts here.
               </p>
-              <button
+              {/* <button
                 onClick={() => setShowSignup(true)}
                 className="bg-gradient-to-r from-purple-600 to-purple-500 text-white px-8 py-3 rounded-lg font-semibold text-lg shadow-md hover:from-purple-700 hover:to-purple-600 transition"
-              >
-                Join Now
-              </button>
+              > */}
+                {/* Join Now */}
+
+                <Register />
+              {/* </button> */}
             </div>
             <div className="md:w-1/2 grid grid-cols-2 gap-4">
               {/* Image placeholders - replace with your actual images */}
               <div className="aspect-square rounded-xl overflow-hidden shadow-md bg-gray-100 flex items-center justify-center">
-                <Image src={"/person.jpg"} alt="Profile Image" width={100} height={100} className="object-cover w-full h-full" />
+                <Image
+                  src={"/person.jpg"}
+                  alt="Profile Image"
+                  width={100}
+                  height={100}
+                  className="object-cover w-full h-full"
+                />
               </div>
               <div className="aspect-square rounded-xl overflow-hidden shadow-md bg-gray-100 flex items-center justify-center">
-                <Image src={"/person.jpg"} alt="Profile Image" width={100} height={100} className="object-cover w-full h-full" />
+                <Image
+                  src={"/person.jpg"}
+                  alt="Profile Image"
+                  width={100}
+                  height={100}
+                  className="object-cover w-full h-full"
+                />
               </div>
               <div className="aspect-square rounded-xl overflow-hidden shadow-md bg-gray-100 flex items-center justify-center">
-               <Image src={"/person.jpg"} alt="Profile Image" width={100} height={100} className="object-cover w-full h-full" />
+                <Image
+                  src={"/person.jpg"}
+                  alt="Profile Image"
+                  width={100}
+                  height={100}
+                  className="object-cover w-full h-full"
+                />
               </div>
               <div className="aspect-square rounded-xl overflow-hidden shadow-md bg-gray-100 flex items-center justify-center">
-                <Image src={"/person.jpg"} alt="Profile Image" width={100} height={100} className="object-cover w-full h-full" />
+                <Image
+                  src={"/person.jpg"}
+                  alt="Profile Image"
+                  width={100}
+                  height={100}
+                  className="object-cover w-full h-full"
+                />
               </div>
             </div>
           </div>
@@ -154,9 +181,9 @@ export default function Home() {
       </section>
 
       {/* Sign Up Modal */}
-      {showSignup && (
+      {/* {showSignup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative">
+          <div className="bg-white text-black rounded-lg shadow-xl max-w-md w-full p-6 relative">
             <button
               onClick={() => setShowSignup(false)}
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
@@ -184,12 +211,13 @@ export default function Home() {
               </p>
             </div>
 
-            <SignIn />
-            <VerifyBlock />
+             <SignIn /> 
+           <VerifyBlock /> 
             <PayBlock />
+            <Register />
           </div>
         </div>
-      )}
+      )}  */}
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
@@ -267,9 +295,7 @@ export default function Home() {
           </div>
 
           <div className="pt-8 border-t border-gray-800 text-center text-gray-400">
-            <p>
-              &copy; {new Date().getFullYear()} Duple. All rights reserved.
-            </p>
+            <p>&copy; {new Date().getFullYear()} Duple. All rights reserved.</p>
           </div>
         </div>
       </footer>
