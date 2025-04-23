@@ -40,3 +40,18 @@ body {
     text-wrap: balance;
   }
 }
+
+/* .custom-thirdweb-button {
+  background-color: #1a1a1a;
+  color: white;        
+  padding: 10px 20px;  
+  border: none;          
+  border-radius: 10px;       
+  font-size: 16px;        
+  cursor: pointer;         
+  transition: background-color 0.2s ease;
+}
+
+.custom-thirdweb-button:hover {
+  background-color: #333333; 
+} */
