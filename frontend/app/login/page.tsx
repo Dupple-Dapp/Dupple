@@ -1,4 +1,7 @@
 "use client";
+
+import abi from "../../contract/abi.json";
+import { CONTRACT_ADDRESS } from "@/contract/address";
 import { useState } from "react";
 import {
   CheckCircle,
@@ -17,6 +20,7 @@ import {
 } from "lucide-react";
 import { Toaster, toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useContract, useContractWrite } from "@thirdweb-dev/react";
 
 const Enums = {
   RelationshipStatus: {
@@ -55,6 +59,7 @@ const Enums = {
 export default function RegistrationPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
+  const [isRegistering, setIsRegistering] = useState(false);
   const [formData, setFormData] = useState({
     ens: "", // ENS name (username)
     description: "", // User's description/bio
@@ -69,6 +74,12 @@ export default function RegistrationPage() {
     gender: Enums.Gender.Male,
     interestedIn: Enums.Gender.Female,
   });
+
+  const { contract } = useContract(CONTRACT_ADDRESS, abi);
+  const { mutateAsync: registerUser, isLoading } = useContractWrite(
+    contract,
+    "registerUser"
+  );
 
   const totalSteps = 4;
 
@@ -171,33 +182,53 @@ export default function RegistrationPage() {
     }
   };
 
-  const handleSubmit = () => {
-    // Here you would call the smart contract's register function
-    console.log("Submitting to blockchain:", {
-      ens: formData.ens,
-      description: formData.description,
-      profilePictureNFT: formData.profilePictureNFT,
-      hobbyIndices: formData.selectedHobbies,
-      relationshipStatus: formData.relationshipStatus,
-      height: formData.height,
-      reason: formData.reasonForJoining,
-      drinking: formData.drinking,
-      smoking: formData.smoking,
-      gender: formData.gender,
-      interestedIn: formData.interestedIn,
-    });
+  const handleSubmit = async () => {
+    if (isRegistering) return;
 
-    // alert("Profile would be registered on blockchain now!");
-    toast.success("Profile would be registered on blockchain now!");
+    setIsRegistering(true);
 
-    setTimeout(() => {
-      router.push("/login");
-    },5000);
-    
-    // In a real implementation, you would:
-    // 1. Connect to the user's Web3 wallet (MetaMask, etc.)
-    // 2. Call the contract's register function with the form data
-    // 3. Handle the transaction process (confirmation, errors, etc.)
+    try {
+      const tx = await registerUser({
+        args: [
+          formData.ens,
+          formData.description,
+          formData.profilePictureNFT,
+          formData.selectedHobbies,
+          formData.relationshipStatus,
+          formData.height,
+          formData.reasonForJoining,
+          formData.drinking,
+          formData.smoking,
+          formData.gender,
+          formData.interestedIn,
+        ],
+      });
+
+      toast.success("Profile registration submitted!");
+      console.log("Transaction receipt:", tx.receipt);
+
+      // Wait for transaction to be mined
+      toast.promise(
+        new Promise((resolve) => {
+          // In a real app, you might want to listen for transaction confirmation
+          setTimeout(resolve, 3000);
+        }),
+        {
+          loading: "Waiting for transaction confirmation...",
+          success: "Profile registered successfully!",
+          error: "Transaction failed",
+        }
+      );
+
+      setTimeout(() => {
+        router.push("/login");
+      }, 5000);
+    } catch (error) {
+      console.error("Registration failed:", error);
+      toast.error("Registration failed. Please try again.");
+    } finally {
+      setIsRegistering(false);
+    }
   };
 
   const renderStepIndicator = () => {
@@ -606,15 +637,27 @@ export default function RegistrationPage() {
             <button
               type="button"
               onClick={nextStep}
-              disabled={step === 3 && formData.selectedHobbies.length === 0}
+              disabled={
+                (step === 3 && formData.selectedHobbies.length === 0) ||
+                isRegistering
+              }
               className={`py-2 px-6 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-600 flex items-center ${
-                step === 3 && formData.selectedHobbies.length === 0
+                (step === 3 && formData.selectedHobbies.length === 0) ||
+                isRegistering
                   ? "opacity-50 cursor-not-allowed"
                   : ""
               }`}
             >
-              {step === totalSteps ? "Register on Blockchain" : "Continue"}
-              {step !== totalSteps && <ChevronRight className="ml-1 w-4 h-4" />}
+              {isRegistering ? (
+                "Processing..."
+              ) : step === totalSteps ? (
+                "Register on Blockchain"
+              ) : (
+                <>
+                  Continue
+                  <ChevronRight className="ml-1 w-4 h-4" />
+                </>
+              )}
             </button>
           </div>
         </form>

@@ -4,18 +4,23 @@ import { SignIn } from "@/components/SignIn";
 import { VerifyBlock } from "@/components/Verify";
 import { PayBlock } from "@/components/Pay";
 import Image from "next/image";
-<<<<<<< HEAD
-import Register from "./register/page";
-import RegistrationPage from "./login/page";
-=======
 import FeaturedProfiles from "@/components/featured-profiles";
 import Link from "next/link";
 // import Footer from "@/components/footer";
->>>>>>> 272612c1445e4a7a907e99a99d3abde0c6a84e23
+import Register from "../components/register/page";
+import { useActiveAccount } from "thirdweb/react";
+import { client } from "@/provider/thirdwebAAProvider";
+import RegistrationPage from "./login/page";
 
 export default function Home() {
   const [showSignup, setShowSignup] = useState(false);
+  const account = useActiveAccount();
+  const isConnected = !!account;
+
+
   const people = ["/person.jpg"];
+
+
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -31,12 +36,16 @@ export default function Home() {
           > */}
           {/* Get Started */}
 
-<<<<<<< HEAD
-          <Register />
-=======
-            {/* <Register /> */}
->>>>>>> 272612c1445e4a7a907e99a99d3abde0c6a84e23
+          {/* <Register /> */}
           {/* </button> */}
+
+          {isConnected ? (
+            <div className="text-purple-600 font-medium">
+              Welcome! {/* Or show user profile */}
+            </div>
+          ) : (
+            <Register />
+          )}
         </div>
       </header>
 
@@ -52,24 +61,13 @@ export default function Home() {
                 Join our community of singles looking for meaningful
                 relationships. Your journey starts here.
               </p>
+              {/* {isConnected && <Register />} */}
               <button
                 // onClick={() => setShowSignup(true)}
                 className="bg-gradient-to-r from-purple-600 to-purple-500 text-white px-8 py-3 rounded-lg font-semibold text-lg shadow-md hover:from-purple-700 hover:to-purple-600 transition"
-<<<<<<< HEAD
-              > */}
-              {/* Join Now */}
-              {/* <button onClick={() => <RegistrationPage/>}>
-                Set up your account
-              </button> */}
-              <SignIn />
-
-              <Register />
-              {/* </button> */}
-=======
               >
                 <Link href="/login">Join Now</Link>
               </button>
->>>>>>> 272612c1445e4a7a907e99a99d3abde0c6a84e23
             </div>
             <div className="md:w-1/2 grid grid-cols-2 gap-4">
               {/* Image placeholders - replace with your actual images */}
