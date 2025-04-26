@@ -4,7 +4,7 @@ import "./globals.css";
 import MiniKitProvider from "@/components/minikit-provider";
 import dynamic from "next/dynamic";
 import NextAuthProvider from "@/components/next-auth-provider";
-import { ThirdwebProvider } from "thirdweb/react";
+import { ThirdwebProvider } from "@thirdweb-dev/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,16 +25,18 @@ export default function RootLayout({
     }
   );
   return (
-    <ThirdwebProvider>
       <html lang="en">
         <body className={inter.className}>
+    <ThirdwebProvider>
+
           <NextAuthProvider>
             <ErudaProvider>
               <MiniKitProvider>{children}</MiniKitProvider>
             </ErudaProvider>
           </NextAuthProvider>
+    </ThirdwebProvider>
+
         </body>
       </html>
-    </ThirdwebProvider>
   );
 }
