@@ -12,6 +12,7 @@ library Events {
     event Disliked(address disliker, address dislikee);
     event Matched(address accepter, address acceptee);
     event Blocked(address blocker, address blockee);
+    event UnBlocked(address blocker, address blockee);
     event ResetUserDailyMessages(address user);
     event Tipped(address tipper, address tippee, uint tipAmount);
     event PaidToReturnTop10Percent(address user);
