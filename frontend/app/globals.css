@@ -55,3 +55,20 @@ body {
 .custom-thirdweb-button:hover {
   background-color: #333333; 
 } */
+
+
+@media (min-width: 768px) {
+  .max-w-md {
+    max-width: 440px;
+  }
+  main {
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin: 2rem auto;
+    min-height: calc(100vh - 4rem);
+    height: 800px;
+  }
+  .fixed {
+    position: absolute;
+  }
+}
