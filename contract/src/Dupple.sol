@@ -2,13 +2,20 @@
 pragma solidity ^0.8.20;
 
 import "./libraries/Events.sol";
-import "./libraries/Errors.sol";
 import "./libraries/Enums.sol";
 
 import "openzeppelin-contracts/contracts/access/Ownable.sol";
 
 contract Dupple is Ownable {
     string[] public allowedHobbies;
+    address[] public allUsers;
+
+    mapping(address => UserProfile) public users;
+    mapping(address => mapping(address => Message[])) public messages;
+    mapping(address => mapping(address => bool)) public liked;
+    mapping(address => mapping(address => bool)) public blocked;
+    mapping(address => mapping(address => bool)) public matches;
+    mapping(address => address[]) public userMatches;
 
     constructor() Ownable(msg.sender) {
         allowedHobbies = [
@@ -45,10 +52,8 @@ contract Dupple is Ownable {
         string ens;
         string description;
         string profilePictureNFT;
-        string[] pictureNFTs;
         string[] hobbies;
         address[] likes;
-        address[] dislikes;
         Enums.RelationshipStatus relationshipStatus;
         uint8 height; // 1 to 5
         Enums.ReasonForJoining reason;
@@ -56,7 +61,6 @@ contract Dupple is Ownable {
         Enums.Smoking smoking;
         Enums.Gender gender;
         Enums.Gender interestedIn;
-        uint dailyMessagesSent;
         uint tipsReceived;
         address[] tippers;
         bool registered;
@@ -68,16 +72,10 @@ contract Dupple is Ownable {
         uint timestamp;
     }
 
-    mapping(address => UserProfile) public users;
-    mapping(address => mapping(address => Message[])) public messages;
-    mapping(address => mapping(address => bool)) public liked;
-    mapping(address => mapping(address => bool)) public disliked;
-    mapping(address => mapping(address => bool)) public blocked;
-    mapping(address => mapping(address => bool)) public matches;
-    mapping(address => address[]) public userMatches;
-
-    address[] public allUsers;
-    uint public dailyMessageLimit = 30;
+    struct ScoredUser {
+        address user;
+        uint score;
+    }
 
     modifier onlyRegistered() {
         require(users[msg.sender].registered, "Not registered");
@@ -128,12 +126,59 @@ contract Dupple is Ownable {
         emit Events.UserRegistered(msg.sender);
     }
 
+    function getTop10PercentUsers()
+        public
+        payable
+        onlyRegistered
+        returns (address[] memory)
+    {
+        require(msg.value >= 0.001 ether, "Insufficient fee");
+
+        uint numOfusers = allUsers.length;
+        require(numOfusers > 0, "No users registered");
+
+        uint theTenPercent = numOfusers / 10;
+        if (theTenPercent == 0) {
+            theTenPercent = 1;
+        }
+
+        ScoredUser[] memory scoredUsers = new ScoredUser[](numOfusers);
+
+        for (uint i = 0; i < numOfusers; i++) {
+            address userAddr = allUsers[i];
+            UserProfile storage user = users[userAddr];
+            uint tips = user.tipsReceived;
+            uint tippersCount = user.tippers.length;
+            uint score = (tips + tippersCount) / 2;
+            scoredUsers[i] = ScoredUser(userAddr, score);
+        }
+
+        for (uint i = 0; i < numOfusers; i++) {
+            for (uint j = i + 1; j < numOfusers; j++) {
+                if (scoredUsers[j].score > scoredUsers[i].score) {
+                    ScoredUser memory temp = scoredUsers[i];
+                    scoredUsers[i] = scoredUsers[j];
+                    scoredUsers[j] = temp;
+                }
+            }
+        }
+
+        address[] memory topUsers = new address[](theTenPercent);
+        for (uint i = 0; i < theTenPercent; i++) {
+            topUsers[i] = scoredUsers[i].user;
+        }
+
+        emit Events.PaidToReturnTop10Percent(msg.sender);
+
+        return topUsers;
+    }
+
     function getUser(address user) external view returns (UserProfile memory) {
         return users[user];
     }
 
-    function uploadPictureNFT(string memory uri) external onlyRegistered {
-        users[msg.sender].pictureNFTs.push(uri);
+    function updateProfilePicture(string memory uri) external onlyRegistered {
+        users[msg.sender].profilePictureNFT = uri;
     }
 
     function updateDescription(string memory _desc) external onlyRegistered {
@@ -144,57 +189,45 @@ contract Dupple is Ownable {
         address to,
         string memory content
     ) external onlyRegistered {
-        require(users[to].registered, "Recipient not found");
-        require(!blocked[to][msg.sender], "You are blocked");
-        require(
-            users[msg.sender].dailyMessagesSent < dailyMessageLimit,
-            "Daily limit reached"
-        );
+        require(users[to].registered, "Can't send to non-user");
+        require(!blocked[to][msg.sender], "blocked");
+        require(to != msg.sender, "Can't message yourself");
 
         messages[msg.sender][to].push(
             Message({content: content, timestamp: block.timestamp})
         );
 
-        users[msg.sender].dailyMessagesSent++;
-
         emit Events.MessageSent(msg.sender, to, content);
     }
 
     function getMessages(
-        address withUser
+        address sender,
+        address receiver
     ) external view onlyOwner returns (Message[] memory) {
-        return messages[msg.sender][withUser];
-    }
-
-    function updateProfilePicture(string memory uri) external onlyRegistered {
-        users[msg.sender].profilePictureNFT = uri;
+        return messages[sender][receiver];
     }
 
     function like(address user) external onlyRegistered {
-        require(!liked[msg.sender][user], "Already liked");
-        liked[msg.sender][user] = true;
-        users[msg.sender].likes.push(user);
+        require(user != msg.sender, "Cannot like yourself");
 
         if (liked[user][msg.sender]) {
-            matches[msg.sender][user] = true;
-            matches[user][msg.sender] = true;
-            userMatches[msg.sender].push(user);
-            userMatches[user].push(msg.sender);
+            _createMatch(user);
+        } else {
+            require(!liked[msg.sender][user], "Already liked");
+            liked[msg.sender][user] = true;
+            users[msg.sender].likes.push(user);
         }
 
         emit Events.Liked(msg.sender, user);
     }
 
-    function dislike(address user) external onlyRegistered {
-        require(!disliked[msg.sender][user], "Already disliked");
-        disliked[msg.sender][user] = true;
-        users[msg.sender].dislikes.push(user);
-
-        emit Events.Disliked(msg.sender, user);
-    }
-
     function accept(address user) external onlyRegistered {
         require(liked[user][msg.sender], "Not yet liked");
+        _createMatch(user);
+    }
+
+    function _createMatch(address user) internal {
+        require(!matches[msg.sender][user], "Already matched");
 
         matches[msg.sender][user] = true;
         matches[user][msg.sender] = true;
@@ -204,21 +237,49 @@ contract Dupple is Ownable {
         emit Events.Matched(msg.sender, user);
     }
 
-    function hasLiked(address user) external view returns (bool) {
+    function dislike(address user) external onlyRegistered {
+        require(user != msg.sender, "Cannot dislike yourself");
+        require(liked[msg.sender][user], "Already dislike");
+
+        liked[msg.sender][user] = false;
+        _removeLike(msg.sender, user);
+
+        emit Events.Disliked(msg.sender, user);
+    }
+
+    function _removeLike(address from, address to) private {
+        uint length = users[from].likes.length;
+        for (uint i = 0; i < length; i++) {
+            if (users[from].likes[i] == to) {
+                if (i != length - 1) {
+                    users[from].likes[i] = users[from].likes[length - 1];
+                }
+                users[from].likes.pop();
+                break;
+            }
+        }
+    }
+
+    function getLikeStatus(address user) external view returns (bool) {
         return liked[msg.sender][user];
     }
 
-    function hasDisliked(address user) external view returns (bool) {
-        return disliked[msg.sender][user];
-    }
-
     function undo(address user) external onlyRegistered {
-        liked[msg.sender][user] = false;
-        disliked[msg.sender][user] = false;
+        require(user != msg.sender, "Cannot undo for yourself");
+
+        bool hadLike = liked[msg.sender][user];
+
+        delete liked[msg.sender][user];
+
+        if (hadLike) {
+            _removeLike(msg.sender, user);
+        }
     }
 
-    function getMatches() external view returns (address[] memory) {
-        return userMatches[msg.sender];
+    function getMatches(
+        address user
+    ) external view onlyOwner returns (address[] memory) {
+        return userMatches[user];
     }
 
     function blockUser(address user) external onlyRegistered {
@@ -227,19 +288,23 @@ contract Dupple is Ownable {
         emit Events.Blocked(msg.sender, user);
     }
 
-    function isBlocked(address user) external view returns (bool) {
-        return blocked[msg.sender][user];
+    function unBlockUser(address user) external onlyRegistered {
+        blocked[msg.sender][user] = false;
+
+        emit Events.UnBlocked(msg.sender, user);
     }
 
-    function resetDailyMessages(address user) external onlyOwner {
-        users[user].dailyMessagesSent = 0;
-
-        emit Events.ResetUserDailyMessages(user);
+    function isBlocked(
+        address blocker,
+        address blockedUser
+    ) external view returns (bool) {
+        return blocked[blocker][blockedUser];
     }
 
     function tip(address user) external payable onlyRegistered {
         require(users[user].registered, "Recipient not found");
         require(user != msg.sender, "Cannot tip yourself");
+        require(msg.value > 0, "Tip must be greater than 0");
 
         users[user].tipsReceived += msg.value;
         users[user].tippers.push(msg.sender);
@@ -258,55 +323,12 @@ contract Dupple is Ownable {
         return users[msg.sender].tipsReceived;
     }
 
-    function payToReturnTop10Percent()
-        external
-        payable
-        onlyRegistered
-        returns (UserProfile[] memory)
-    {
-        require(msg.value >= 0.001 ether, "Insufficient fee");
-
-        uint total = allUsers.length;
-        require(total > 0, "No users registered");
-
-        uint topCount = total / 10;
-        if (topCount == 0) topCount = 1;
-
-        // Create temporary array
-        UserProfile[] memory tempUsers = new UserProfile[](total);
-        for (uint i = 0; i < total; i++) {
-            tempUsers[i] = users[allUsers[i]];
-        }
-
-        // Sort by number of likes (descending)
-        for (uint i = 0; i < total; i++) {
-            for (uint j = 0; j < total - 1; j++) {
-                if (tempUsers[j].likes.length < tempUsers[j + 1].likes.length) {
-                    UserProfile memory tmp = tempUsers[j];
-                    tempUsers[j] = tempUsers[j + 1];
-                    tempUsers[j + 1] = tmp;
-                }
-            }
-        }
-
-        // Slice top N
-        UserProfile[] memory topUsers = new UserProfile[](topCount);
-        for (uint i = 0; i < topCount; i++) {
-            topUsers[i] = tempUsers[i];
-        }
-        emit Events.PaidToReturnTop10Percent(msg.sender);
-
-        return topUsers;
-    }
-
     function getENS(address user) external view returns (string memory) {
         return users[user].ens;
     }
 
-    function changeDailyMessageLimit(uint num) external onlyOwner {
-        dailyMessageLimit = num;
-
-        emit Events.ChangeDailyMessageLimit(num);
+    function getAllUsers() external view returns (address[] memory) {
+        return allUsers;
     }
 
     function withdrawFromContract() external onlyOwner {
