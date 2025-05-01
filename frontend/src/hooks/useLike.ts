@@ -1,7 +1,7 @@
 import { useSendTransaction, useActiveAccount } from "thirdweb/react";
 import { prepareContractCall, getContract } from "thirdweb";
 import { baseSepolia } from "thirdweb/chains";
-import { client } from "../provider/thirdwebAAclient";
+import { client } from "../providers/thirdwebAAclient";
 import { CONTRACT_ADDRESS } from "../contract/address";
 // import abi from "../contract/abi.json";
 
@@ -55,11 +55,11 @@ export const useLike = () => {
       params: [],
     });
 
-    console.log("like",tx);
+    console.log("like", tx);
 
     try {
       const transactionReceipt = await mutateAsync(tx);
-      console.log("passed!")
+      console.log("passed!");
       return transactionReceipt;
     } catch (err) {
       console.error("Transaction failed:", err);

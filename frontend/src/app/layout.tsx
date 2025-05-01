@@ -27,13 +27,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ThirdwebProvider>
-        <MiniKitProvider>
-          <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-          >
-            {children}
-          </body>
-        </MiniKitProvider>
+          <MiniKitProvider>
+            <body
+              className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+            >
+              {children}
+            </body>
+          </MiniKitProvider>
       </ThirdwebProvider>
     </html>
   );

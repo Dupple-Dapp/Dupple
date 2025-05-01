@@ -13,7 +13,7 @@ import {
 import { Toaster, toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useRegisterUser } from "@/src/hooks/useRegisterUser";
-import { AccountStatus } from "@/src/components/smartAccount";
+// import { AccountStatus } from "@/src/components/smartAccount";
 
 const Enums = {
   RelationshipStatus: {
@@ -52,7 +52,7 @@ const Enums = {
 export default function RegistrationPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const { RegisterUser, isPending } = useRegisterUser();
+  const { registerUser, isPending } = useRegisterUser();
 
   const [formData, setFormData] = useState({
     ens: "",
@@ -156,7 +156,7 @@ export default function RegistrationPage() {
       console.log("FormData:", formData);
 
       await toast.promise(
-        RegisterUser(
+        registerUser(
           formData.ens,
           formData.description,
           formData.profilePic,
@@ -179,7 +179,7 @@ export default function RegistrationPage() {
         }
       );
 
-      router.push("/login");
+      router.push("/findMatch");
     } catch (error) {
       console.error("Registration error:", error);
       toast.error("Registration failed. Please try again.");
@@ -190,7 +190,7 @@ export default function RegistrationPage() {
     return (
       <div className="mb-8">
         <Toaster position="top-right" reverseOrder={false} />
-        <AccountStatus />;
+        {/* <AccountStatus /> */}
         <div className="flex justify-between items-center relative">
           {Array.from({ length: totalSteps }, (_, i) => {
             const stepNum = i + 1;

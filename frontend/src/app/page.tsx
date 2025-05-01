@@ -4,8 +4,14 @@ import FeaturedProfiles from "../components/featured-profiles";
 import Link from "next/link";
 import Register from "../components/register/page";
 import { LikeAddressInput } from "../components/like/page";
+import { useGetUser } from "../hooks/useGetUser";
+import {  useActiveAccount } from "thirdweb/react";
 
 export default function Home() {
+  const account = useActiveAccount(); // Fixed: properly called the hook
+  const address = account?.address; // Added: get address from account
+  const { userProfile, isLoading, error } = useGetUser(address);
+
   return (
     <main className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -15,7 +21,7 @@ export default function Home() {
             <h1 className="text-2xl font-bold text-purple-600">dupple</h1>
           </div>
           <Register />
-          <LikeAddressInput/>
+          {/* <LikeAddressInput/> */}
         </div>
       </header>
 
@@ -32,7 +38,12 @@ export default function Home() {
                 relationships. Your journey starts here.
               </p>
               <button className="bg-gradient-to-r from-purple-600 to-purple-500 text-white px-8 py-3 rounded-lg font-semibold text-lg shadow-md hover:from-purple-700 hover:to-purple-600 transition">
-                <Link href="/login">Join Now</Link>
+                {/* Changed: Added conditional link based on registration status */}
+                {userProfile?.registered ? (
+                  <Link href="/findMatch">Find Matches</Link>
+                ) : (
+                  <Link href="/login">Join Now</Link>
+                )}
               </button>
             </div>
             <div className="md:w-1/2 grid grid-cols-2 gap-4">

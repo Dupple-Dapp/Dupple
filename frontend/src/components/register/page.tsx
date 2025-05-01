@@ -1,29 +1,27 @@
 "use client";
 
 import { ConnectButton, useActiveAccount } from "thirdweb/react";
-import { client } from "../../provider/thirdwebAAclient";
+import { client } from "../../providers/thirdwebAAclient";
 import { inAppWallet } from "thirdweb/wallets";
 import { baseSepolia } from "thirdweb/chains";
 
 export default function Register() {
   const account = useActiveAccount();
-  const isConnected = !!account;
+  const isConnected = !!account?.address;
 
   return (
     <div>
       <ConnectButton
+        autoConnect
         client={client}
         wallets={[
           inAppWallet({
             auth: {
-              mode: "popup",
+              mode: "redirect",
               options: ["google", "farcaster", "passkey"],
-              // redirectUrl: "https://8e67-105-112-124-95.ngrok-free.app/",
+              redirectUrl:
+                "https://worldcoin.org/mini-app?app_id=app_e628a8540df5881096e0cf4ceacde900&draft_id=meta_ab22239fa156ef097c3c3a797de2f76e&app_mode=mini-app",
             },
-            // smartAccount: {
-            //   sponsorGas: true,
-            //   chain: baseSepolia,
-            // },
           }),
         ]}
         accountAbstraction={{
